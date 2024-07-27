@@ -22,11 +22,11 @@ $api.interceptors.response.use(
     },
     async error => {
         if (error) {
-           handleRefreshToken();
+            console.log(error);
         }
         const originalRequest = error.config;
 
-        if (error.response.status === 401 && originalRequest && !originalRequest._isRetry) {
+        if (error.response.status === 401 || error.response.status === 403 && error.config && !error.config._isRetry) {
             originalRequest._isRetry = true;
             console.log('Attempting to refresh token');
 
@@ -58,25 +58,5 @@ $api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-const handleRefreshToken = async () => {
-    try {
-        // Send the refresh token to the server to get a new access token
-        const response = await axios.post('http://localhost:3000/api/auth/token', {
-            token: localStorage.getItem('refreshToken'),
-        });
-
-        if (response.status === 200) {
-            // Store the new access token
-            localStorage.setItem('accessToken', response.data.accessToken);
-            console.log('Access token refreshed successfully');
-        } else {
-            console.error('Failed to refresh token');
-        }
-    } catch (error) {
-        console.error('Error refreshing token:', error);
-        console.log('Refreshing token failed, logging out.');
-    }
-}
 
 export default $api;

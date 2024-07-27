@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
 import $api from '../utils/api';
+import { $axios } from '../utils';
 
 export default function Register() {
     const [name, setName] = React.useState('');
@@ -25,7 +26,7 @@ export default function Register() {
             age
         }
         try {
-            const respons = await $api.post('/auth/register', optionBody);
+            const respons = await $axios.post('/auth/register', optionBody);
             console.log(respons);
         }
         catch (error) {
